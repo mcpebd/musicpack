@@ -1,4 +1,4 @@
-name: Create and Upload Release
+name: Release MPACK from source
 
 on:
   workflow_dispatch:
@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Clone Repository
+    - name: git clone
       run: |
         git clone https://user:${{ secrets.MURGI_PAT }}@github.com/mcpebd/mpack.git
 
@@ -26,8 +26,8 @@ jobs:
         zip -r mpack.zip.mcpack . -x "*.git*" ".github/*" ".gitignore"
         popd
 
-    - name: Create Release and Upload Artifact
+    - name: Upload to release
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        gh release create ${{ github.event.inputs.release_tag }} mpack/mpack.zip.mcpack --title "${{ github.event.inputs.release_tag }}" --notes "A release" --latest
+        gh release create ${{ github.event.inputs.release_tag }} mpack/mpack.zip.mcpack --title "${{ github.event.inputs.release_tag }}" --notes "What a great day to be alive! $(date +'%Y-%m-%d')" --latest
