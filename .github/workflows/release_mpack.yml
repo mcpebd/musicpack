@@ -28,6 +28,8 @@ jobs:
 
     - name: Create Release and Upload Artifact
       run: |
-        gh release create ${{ github.event.inputs.release_tag }} workspace/mpack/mpack.zip.mcpack --title "Release ${{ github.event.inputs.release_tag }}" --notes "Automated release for tag ${{ github.event.inputs.release_tag }}" --latest
+        cd workspace/mpack
+        gh release create ${{ github.event.inputs.release_tag }} mpack.zip.mcpack --title "Release ${{ github.event.inputs.release_tag }}" --notes "Automated release for tag ${{ github.event.inputs.release_tag }}" --latest
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
