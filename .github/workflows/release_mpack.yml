@@ -21,11 +21,13 @@ jobs:
 
     - name: Navigate to mpack and create zip
       run: |
-        zip -r mpack.zip.mcpack mpack -x "mpack/.git*" "mpack/.github/*" "mpack/.gitignore"
+        pushd mpack
+        zip -r mpack.zip.mcpack . -x "*.git*" ".github/*" ".gitignore"
+        popd
 
     - name: Create Release and Upload Artifact
       run: |
-        gh release create ${{ github.event.inputs.release_tag }} mpack.zip.mcpack --title "Release ${{ github.event.inputs.release_tag }}" --notes "Automated release for tag ${{ github.event.inputs.release_tag }}" --latest
+        gh release create ${{ github.event.inputs.release_tag }} mpack/mpack.zip.mcpack --title "${{ github.event.inputs.release_tag }}" --notes "A release" --latest
       env:
         GH_TOKEN: ${{ github.token }}
 
