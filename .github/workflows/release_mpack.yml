@@ -1,49 +1,43 @@
-name: Create and Upload Zip Release
+name: Create Release and Upload Zip
 
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag version (e.g., 1.21.50)'
+        description: 'Tag for the release'
         required: true
+        default: 'v1.0.0'
 
 jobs:
-  build:
+  create-release:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - name: Checkout the private repository
-      uses: actions/checkout@v3
-      with:
-        repository: mcpebd/mpack  # specify your private repository here
-        token: ${{ secrets.GITHUB_TOKEN }}  # use the default GITHUB_TOKEN for authentication
+      # Step 1: Checkout the repository
+      - name: Checkout the repository
+        uses: actions/checkout@v3
 
-    - name: Set up Git
-      run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
+      # Step 2: Clone the private repository (using a Personal Access Token)
+      - name: Clone the private repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          git clone https://github.com/mcpebd/mpack.git
 
-    - name: Create Tag
-      run: |
-        git tag ${{ github.event.inputs.tag }}
-        git push origin ${{ github.event.inputs.tag }}
+      # Step 3: Create a zip of the repository excluding specific files and directories
+      - name: Zip the repository excluding .git, .github, .gitignore
+        run: |
+          # Navigate to the repo directory
+          cd mpack
 
-    - name: Mark as latest release
-      run: |
-        gh release create ${{ github.event.inputs.tag }} --title "Release ${{ github.event.inputs.tag }}" --notes "Release of version ${{ github.event.inputs.tag }}" --latest --prerelease
+          # Create a zip of the root directory with exclusions
+          zip -r ../mpack.zip.mcpack . -x "*.git*" -x ".github/*" -x ".gitignore"
 
-    - name: Remove .git folder
-      run: |
-        rm -rf .git
-
-    - name: Create ZIP file with 4K alignment
-      run: |
-        zip -r9 -X mpack.zip.mcpack *  # This will zip the repository files with 4K alignment by default in Linux
-        rm -rf .git  # Remove .git folder if not already done
-
-    - name: Upload ZIP to GitHub release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: mpack.zip.mcpack
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub token for upload permissions
+      # Step 4: Create the release and upload the zip file
+      - name: Create GitHub release and upload the zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Create the release with the tag provided by the user
+          TAG=${{ github.event.inputs.tag }}
+          gh release create $TAG ../mpack.zip.mcpack --title "Release $TAG" --notes "Release notes for $TAG" --latest
