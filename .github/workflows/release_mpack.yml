@@ -15,9 +15,10 @@ jobs:
     steps:
     - name: Checkout temporary workspace
       run: mkdir workspace
-      - name: Clone Repository
+      
+    - name: Clone Repository
       run: |
-      git clone https://user:${{ secrets.GITHUB_PAT }}@github.com/mcpebd/mpack.git workspace/mpack
+        git clone https://user:${{ secrets.GITHUB_PAT }}@github.com/mcpebd/mpack.git workspace/mpack
 
 
     - name: Navigate to mpack and create zip
