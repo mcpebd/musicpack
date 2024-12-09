@@ -28,6 +28,6 @@ jobs:
 
     - name: Create Release and Upload Artifact
       env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        GH_TOKEN: ${{ github.token }}
       run: |
         gh release create ${{ github.event.inputs.release_tag }} mpack/mpack.zip.mcpack --title "${{ github.event.inputs.release_tag }}" --notes "A release" --latest
