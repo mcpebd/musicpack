@@ -1,4 +1,4 @@
-name: Make ZIP and release (Windows)
+name: Release MPACK
 
 on:
   workflow_dispatch:
