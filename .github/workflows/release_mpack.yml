@@ -17,7 +17,7 @@ jobs:
 
     - name: git clone
       run: |
-        git clone https://${{ github.token }}@github.com/mcpebd/mpack.git
+        git clone https://${{ secrets.MURGI }}@github.com/mcpebd/mpack.git
 
     - name: Make ZIP
       run: |
