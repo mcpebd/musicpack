@@ -5,6 +5,7 @@ on:
     inputs:
       release_tag:
         description: 'Release tag'
+        default: 'v1.21'
         required: true
 
 jobs:
@@ -27,4 +28,5 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        gh release create ${{ github.event.inputs.release_tag }} musicpack.zip.mcpack --title "${{ github.event.inputs.release_tag }}" --notes "Uploaded on $(TZ='Asia/Dhaka' date +'%Y%m%d_%H%M') (UTC +06)" --latest
+        echo -e "Uploaded on $(TZ='Asia/Dhaka' date +'%Y%m%d_%H%M') (UTC +06)\n\nApplies to `${{ github.event.inputs.release_tag }}+`" > notes.txt
+        gh release create ${{ github.event.inputs.release_tag }} musicpack.zip.mcpack --title "${{ github.event.inputs.release_tag }}" --notes-file "notes.txt" --latest
