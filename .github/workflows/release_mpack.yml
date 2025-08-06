@@ -1,4 +1,5 @@
 name: Release MPACK
+run-name: 'Release MPACK: ${{ inputs.release_tag }}'
 
 on:
   workflow_dispatch:
